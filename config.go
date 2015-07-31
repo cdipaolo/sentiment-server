@@ -17,7 +17,7 @@ var (
 	// Config stores the global server
 	// configuration parsed from the passed
 	// config JSON file
-	Config *Config
+	Config *Configuration
 
 	// config holds the configuration
 	// path
@@ -26,7 +26,7 @@ var (
 
 // Config holds configuration information
 // for the service
-type Config struct {
+type Configuration struct {
 	Port       int16 `json:"port,omitempty"`
 	portString string
 
@@ -66,7 +66,7 @@ func ParseConfig() error {
 		return fmt.Errorf("ERROR: error generating absolute path from given config path. Does the file exist? %v", err)
 	}
 
-	f, err = os.Open(path)
+	f, err := os.Open(path)
 	if err != nil {
 		return fmt.Errorf("ERROR: error opening config file: %v", err)
 	}
@@ -75,26 +75,22 @@ func ParseConfig() error {
 	// 1KB should be enough for
 	// a reasonable config file
 	bytes := make([]byte, 1024)
-	_, err = f.Read(bytes)
+	n, err := f.Read(bytes)
 	if err != nil && err != io.EOF {
 		return fmt.Errorf("ERROR: error reading config file into buffer: %v", err)
 	}
 
 	// unmarshal file into Config struct
-	err = json.Unmarshal(bytes, &Config)
+	err = json.Unmarshal(bytes[:n], &Config)
 	if err != nil {
 		return fmt.Errorf("ERROR: error unmarshalling given config file into a Config struct: %v", err)
 	}
 
 	if Config.Port == 0 {
-		Config.Port == 8080
+		Config.Port = 8080
 	}
 
-	port, err := strconv.Atoi(Config.Port)
-	if err != nil {
-		return fmt.Errorf("ERROR: error creating port string from given port: %v", err)
-	}
-	Config.portString = ":" + port
+	Config.portString = fmt.Sprintf(":%v", Config.Port)
 
 	return nil
 }
