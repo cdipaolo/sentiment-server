@@ -25,6 +25,7 @@ func HandleSentiment(r http.ResponseWriter, req *http.Request) {
 	if req.ContentLength < 1 {
 		r.WriteHeader(http.StatusBadRequest)
 		r.Write([]byte(fmt.Sprintf(`{"message": "no text passed. Cannot run sentiment analysis"}`)))
+		log.Printf("POST /analyze > ERROR: no text passed\n")
 		return
 	}
 
@@ -33,6 +34,7 @@ func HandleSentiment(r http.ResponseWriter, req *http.Request) {
 	if err != nil && err != io.EOF {
 		r.WriteHeader(http.StatusInternalServerError)
 		r.Write([]byte(fmt.Sprintf(`{"message": "ERROR: error reading request body", "error": "%v"}`, err.Error())))
+		log.Printf("POST /analyze > ERROR: couldn't read request body\n\t%v\n", err)
 		return
 	}
 
@@ -41,6 +43,7 @@ func HandleSentiment(r http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		r.WriteHeader(http.StatusBadRequest)
 		r.Write([]byte(fmt.Sprintf(`{"message": "ERROR: error unmarshalling given JSON into expected format", "error": "%v"}`, err.Error())))
+		log.Printf("POST /analyze > ERROR: error unmarshalling given JSON\n\t%v\n", err)
 		return
 	}
 
@@ -49,13 +52,14 @@ func HandleSentiment(r http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		r.WriteHeader(http.StatusInternalServerError)
 		r.Write([]byte(fmt.Sprintf(`{"message": "ERROR: unable to marshal sentiment analysis into JSON", "error": "%v"}`, err.Error())))
+		log.Printf("POST /analyze > ERROR: unable to unmarshal sentiment analysis into JSON\n\t%v\n", err)
 		return
 	}
 
 	r.WriteHeader(http.StatusOK)
 	r.Write(resp)
 
-	log.Printf("POST /analyze [len(text) = %v]", len(j.Text))
+	log.Printf("POST /analyze [len(text) = %v]\n", len(j.Text))
 }
 
 // HandleHookedRequest is an http.HandlerFunc
@@ -71,6 +75,7 @@ func HandleHookedRequest(r http.ResponseWriter, req *http.Request) {
 	if req.ContentLength < 1 {
 		r.WriteHeader(http.StatusBadRequest)
 		r.Write([]byte(fmt.Sprintf(`{"message": "no text passed. Cannot run sentiment analysis"}`)))
+		log.Printf("POST /task > ERROR: no text passed\n")
 		return
 	}
 
@@ -79,6 +84,7 @@ func HandleHookedRequest(r http.ResponseWriter, req *http.Request) {
 	if err != nil && err != io.EOF {
 		r.WriteHeader(http.StatusInternalServerError)
 		r.Write([]byte(fmt.Sprintf(`{"message": "ERROR: error reading request body", "error": "%v"}`, err.Error())))
+		log.Printf("POST /task > ERROR: error reading request\n\t%v\n", err)
 		return
 	}
 
@@ -87,6 +93,7 @@ func HandleHookedRequest(r http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		r.WriteHeader(http.StatusBadRequest)
 		r.Write([]byte(fmt.Sprintf(`{"message": "ERROR: error unmarshalling given JSON into expected format", "error": "%v"}`, err.Error())))
+		log.Printf("POST /task > ERROR: error unmarshalling given JSON\n\t%v\n", err)
 		return
 	}
 
@@ -95,6 +102,7 @@ func HandleHookedRequest(r http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		r.WriteHeader(http.StatusInternalServerError)
 		r.Write([]byte(fmt.Sprintf(`{"message": "ERROR: unable to get text from hook request with configured parameters", "error": %v}`, err)))
+		log.Printf("POST /task > ERROR: error getting hooked response\n\t%v\n", err)
 		return
 	}
 
@@ -103,13 +111,14 @@ func HandleHookedRequest(r http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		r.WriteHeader(http.StatusInternalServerError)
 		r.Write([]byte(fmt.Sprintf(`{"message": "ERROR: unable to marshal sentiment analysis into JSON", "error": "%v"}`, err.Error())))
+		log.Printf("POST /task > ERROR: error marshalling sentiment analysis into JSON\n\t%v\n", err)
 		return
 	}
 
 	r.WriteHeader(http.StatusOK)
 	r.Write(resp)
 
-	log.Printf("POST /task [len(text) = %v]", len(text))
+	log.Printf("POST /task [len(text) = %v]\n", len(text))
 }
 
 // GetHookResponse takes in a TaskJSON and
