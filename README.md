@@ -59,13 +59,15 @@ Example Config:
 
 ### POST /analyze
 
-General text classification. Pass it some body of text in the expected format and it will output the estimated sentiment. Positive numbers indicate positive sentiment and negative numbers indicate negative sentiment. It will also give you the estimated sentiment of each word (given on the interval [-1,1].)
+General text classification. Pass it some body of text in the expected format and it will output the estimated sentiment. Sentiment values are returned on the range [0,1]. For Individual words, the score is the probability that the word is positive. For sentences and the score of the whole document, the value is returned as a descrete value in {0,1}. This is to prevent float underflow by using logarithmic sums (which predict the same output but won't give a clean probability number.) 
+
+Note that all text is converted to lowercase and only letters in a-z are kept (numbers, etc. are taken out.)
 
 **Expected JSON**
 
 ```json
 {
-    "text": "This is an awesome day!"
+    "text": "I'm not sure I like your tone right now. I do love you as a person, though."
 }
 ```
 
