@@ -143,3 +143,7 @@ Note that you can omit the `hookId` to just use the default hook instead.
   "score": 0.6103695181362121
 }
 ```
+
+## LICENSE - MIT
+
+See [LICENSE](LICENSE)
