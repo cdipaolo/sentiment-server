@@ -5,7 +5,7 @@ Sentiment Server performs modular sentiment analysis as a drop-in, easy, open so
 
 The server uses [this library](http://github.com/cdipaolo/sentiment) for sentiment analysis. Problems with the sentiment engine itself should be registered there. The model is a Naive Bayes classifier trained on the train set from the MDB movie review corpus (about 85,000 words!)
 
-The server is _fast_! A simple benchmark of the `POST /analyze` endpoint (run `go test -bench .` in the project dir) gives an average time at the server of 0.63283ms, including routing, calculating sentiment, etc. on a 2014 Macbook Air with iTunes, Chrome, a terminal, and a bunch of daemons (including Postgres) running. These are all the directly imported dependencies:
+The server is _fast_! A simple benchmark of the `POST /analyze` endpoint (run `go test -bench .` in the project dir) gives an average time at the server of 1.0996ms, including routing, calculating sentiment, etc. for a few paragraphs from a Paul Graham essay with individual analysis for words and sentences as well as the document as a whole on a 2014 Macbook Air with iTunes, Chrome, a terminal, and a bunch of daemons (including Postgres) running. These are all the directly imported dependencies:
 
 ![Sentiment Server Dependencies](dependencies.png)
 
@@ -75,27 +75,85 @@ General text classification. Pass it some body of text in the expected format an
 {
   "words": [
     {
-      "word": "this",
-      "score": -0.07602276959089216
+      "word": "im",
+      "score": 0.5
     },
     {
-      "word": "is",
-      "score": 0
+      "word": "not",
+      "score": 0.4675036438319862
     },
     {
-      "word": "an",
-      "score": 0
+      "word": "sure",
+      "score": 0.4648956356736243
     },
     {
-      "word": "awesome",
-      "score": 0.513978494623656
+      "word": "i",
+      "score": 0.5
     },
     {
-      "word": "day",
-      "score": 0.1724137931034483
+      "word": "like",
+      "score": 0.4444105070250458
+    },
+    {
+      "word": "your",
+      "score": 0.43021812378081226
+    },
+    {
+      "word": "tone",
+      "score": 0.5729166666666666
+    },
+    {
+      "word": "right",
+      "score": 0.5149606299212599
+    },
+    {
+      "word": "now",
+      "score": 0.5145454545454546
+    },
+    {
+      "word": "i",
+      "score": 0.5
+    },
+    {
+      "word": "do",
+      "score": 0.5
+    },
+    {
+      "word": "love",
+      "score": 0.6674710424710425
+    },
+    {
+      "word": "you",
+      "score": 0.4928460025767953
+    },
+    {
+      "word": "as",
+      "score": 0.5
+    },
+    {
+      "word": "a",
+      "score": 0.5
+    },
+    {
+      "word": "person",
+      "score": 0.47062750333778364
+    },
+    {
+      "word": "though",
+      "score": 0.5446105072463768
     }
   ],
-  "score": 0.6103695181362121
+  "sentences": [
+    {
+      "sentence": "im not sure i like your tone right now",
+      "score": 0
+    },
+    {
+      "sentence": " i do love you as a person though",
+      "score": 1
+    }
+  ],
+  "score": 1
 }
 ```
 
