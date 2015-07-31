@@ -182,6 +182,44 @@ func TestHookedSentimentShouldPass2(t *testing.T) {
 	}
 }
 
+// test default hook settings
+func TestHookedSentimentShouldPass3(t *testing.T) {
+	text, err := GetHookResponse(TaskJSON{
+		ID:     "1",
+		HookID: "comment",
+	})
+	if err != nil {
+		t.Fatalf("ERROR: could not get hooked response!\n\t%v\n", err)
+	}
+
+	status, body, err := post("task", `{
+		"recordingId": "1"
+	}`)
+	if err != nil {
+		t.Errorf("ERROR: error trying to post\n\t%v\n", err)
+	}
+	if status != http.StatusOK {
+		t.Errorf("ERROR: status returned should be 200 OK\n\t%v\n", string(body))
+	}
+	if len(body) == 0 {
+		t.Fatalf("ERROR: body should not be nil!\n")
+	}
+
+	analysis := sentiment.Analysis{}
+	err = json.Unmarshal(body, &analysis)
+	if err != nil {
+		t.Fatalf("ERROR: error unmarshalling JSON response\n\t%v\n", err)
+	}
+
+	should := model.SentimentAnalysis(text)
+	if should.Score != analysis.Score {
+		t.Errorf("ERROR: responded text sentiment score should equal the same score from the library!\n\tShould be: %v\n\tReturned: %v\n", should.Score, analysis.Score)
+	}
+	if len(should.Words) != len(analysis.Words) {
+		t.Errorf("ERROR: responded individual word sentiment should equal in length the same response from the library!\n\tShould be: %v\n\tReturned: %v\n", should.Words, analysis.Words)
+	}
+}
+
 func TestHookedSentimentShouldFail1(t *testing.T) {
 	status, body, err := post("task", `{
 		"recordingId": "1",
