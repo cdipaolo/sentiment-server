@@ -43,8 +43,8 @@ Example Config:
             "url": "http://jsonplaceholder.typicode.com/posts/%v",
             "key": "body",
             "headers": {
-                "Auth": "abcdefg",
-                "Another-Header": "Hello!"
+                "Auth": ["abcdefg"],
+                "Another-Header": ["Hello!"]
             }
         },
         "comment": {
