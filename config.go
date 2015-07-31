@@ -26,11 +26,24 @@ var (
 
 // Config holds configuration information
 // for the service
+//
+// Hooks, used for the hooked analysis
+// endpoint, are given as a map of id's
+// to Hooks. (id's are strings that are
+// specified within the passed JSON to the
+// POST /task endpoint.) The default hook
+// can be passed so you won't have to
+// manually pass in a hookId when running
+// a task. It defaults to the given hook
+// when you only pass one hook in the config.
+// When padding multiple, it defaults to
+// a random hook.
 type Configuration struct {
 	Port       int16 `json:"port,omitempty"`
 	portString string
 
-	Hooks []Hook `json:"hooks,omitempty"`
+	Hooks       map[string]Hook `json:"hooks,omitempty"`
+	DefaultHook string          `json:"defaultHook,omitempty"`
 }
 
 // Hook holds information for any
@@ -44,7 +57,13 @@ type Configuration struct {
 // value!
 type Hook struct {
 	URL     string              `json:"url"`
-	Headers map[string][]string `json:"headers"`
+	Headers map[string][]string `json:"headers,omitempty"`
+
+	// Key is the key the URL will look for
+	// in returned JSON. If not provided the
+	// Hook will expect the returned values
+	// to be plain text
+	Key string `json:"key,omitempty"`
 }
 
 // init grabs the config from the expected
@@ -91,6 +110,10 @@ func ParseConfig() error {
 	}
 
 	Config.portString = fmt.Sprintf(":%v", Config.Port)
+
+	for id := range Config.Hooks {
+		Config.DefaultHook = id
+	}
 
 	return nil
 }

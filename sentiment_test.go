@@ -103,3 +103,13 @@ func TestSentimentShouldFail2(t *testing.T) {
 		t.Fatalf("ERROR: body should not be nil!\n")
 	}
 }
+
+// * Benchmarks * //
+
+func BenchmarkPOSTAnalyze(b *testing.B) {
+	txt := `{"text":"The anti-immigration people have to invent some explanation to account for all the effort technology companies have expended trying to make immigration easier. So they claim it's because they want to drive down salaries. But if you talk to startups, you find practically every one over a certain size has gone through legal contortions to get programmers into the US, where they then paid them the same as they'd have paid an American. Why would they go to extra trouble to get programmers for the same price? The only explanation is that they're telling the truth: there are just not enough great programmers to go around"}`
+
+	for i := 0; i < b.N; i++ {
+		post("analyze", txt)
+	}
+}

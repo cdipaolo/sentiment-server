@@ -1,3 +1,13 @@
 {
-    "port": 8080
+    "port": 8080,
+    "hooks": {
+        "post": {
+            "url": "http://jsonplaceholder.typicode.com/posts/%v",
+            "key": "body"
+        },
+        "comment": {
+            "url": "http://jsonplaceholder.typicode.com/comments/%v",
+            "key": "name"
+        }
+    }
 }

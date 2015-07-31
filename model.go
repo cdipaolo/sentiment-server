@@ -14,6 +14,6 @@ type AnalyseJSON struct {
 // specified within this struct) and
 // run analysis on that returned value
 type TaskJSON struct {
-	ID     string `json:"id"`
-	HookID string `json:"hook_id"`
+	ID     string `json:"recordingId"`
+	HookID string `json:"hookId,omitempty"`
 }
