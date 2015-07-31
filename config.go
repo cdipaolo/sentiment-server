@@ -91,8 +91,10 @@ func ParseConfig() error {
 
 	Config.portString = fmt.Sprintf(":%v", Config.Port)
 
-	for id := range Config.Hooks {
-		Config.DefaultHook = id
+	if Config.DefaultHook == "" {
+		for id := range Config.Hooks {
+			Config.DefaultHook = id
+		}
 	}
 
 	return nil

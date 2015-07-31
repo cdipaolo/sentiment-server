@@ -10,5 +10,5 @@
             "key": "name"
         }
     },
-    "defaultHook": "comment"
+    "defaultHook": "post"
 }

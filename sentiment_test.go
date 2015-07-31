@@ -186,7 +186,7 @@ func TestHookedSentimentShouldPass2(t *testing.T) {
 func TestHookedSentimentShouldPass3(t *testing.T) {
 	text, err := GetHookResponse(TaskJSON{
 		ID:     "1",
-		HookID: "comment",
+		HookID: "post",
 	})
 	if err != nil {
 		t.Fatalf("ERROR: could not get hooked response!\n\t%v\n", err)
