@@ -95,6 +95,7 @@ func HandleHookedRequest(r http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		r.WriteHeader(http.StatusInternalServerError)
 		r.Write([]byte(fmt.Sprintf(`{"message": "ERROR: unable to get text from hook request with configured parameters", "error": %v}`, err)))
+		return
 	}
 
 	analysis := model.SentimentAnalysis(text)

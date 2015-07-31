@@ -182,6 +182,35 @@ func TestHookedSentimentShouldPass2(t *testing.T) {
 	}
 }
 
+func TestHookedSentimentShouldFail1(t *testing.T) {
+	status, body, err := post("task", `{
+		"recordingId": "1",
+		"hookId": "does-not-exist"
+	}`)
+	if err != nil {
+		t.Errorf("ERROR: error trying to post\n\t%v\n", err)
+	}
+	if status != http.StatusInternalServerError {
+		t.Errorf("ERROR: status returned should be 500 SERVER ERROR\n\t%v\n", string(body))
+	}
+	if len(body) == 0 {
+		t.Fatalf("ERROR: body should not be nil!\n")
+	}
+}
+
+func TestHookedSentimentShouldFail2(t *testing.T) {
+	status, body, err := post("task", ``)
+	if err != nil {
+		t.Errorf("ERROR: error trying to post\n\t%v\n", err)
+	}
+	if status != http.StatusBadRequest {
+		t.Errorf("ERROR: status returned should be 400 BAD REQUEST\n\t%v\n", string(body))
+	}
+	if len(body) == 0 {
+		t.Fatalf("ERROR: body should not be nil!\n")
+	}
+}
+
 // * Benchmarks * //
 
 func BenchmarkPOSTAnalyze(b *testing.B) {
