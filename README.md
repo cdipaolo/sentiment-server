@@ -5,7 +5,7 @@ Sentiment Server performs modular sentiment analysis as a drop-in, easy, open so
 
 The server uses [this library](http://github.com/cdipaolo/sentiment) for sentiment analysis. Problems with the sentiment engine itself should be registered there.
 
-The server is _fast_! A simple benchmark of the `POST /analyze` endpoint (run `go test -bench .` in the project dir) gives an average time at the server of 0.63283ms, including routing, calculating sentiment, etc. on a 2014 Macbook Air with iTunes, Chromei, a terminal, and a bunch of daemons (including Postgres) running. These are all the directly imported dependencies:
+The server is _fast_! A simple benchmark of the `POST /analyze` endpoint (run `go test -bench .` in the project dir) gives an average time at the server of 0.63283ms, including routing, calculating sentiment, etc. on a 2014 Macbook Air with iTunes, Chrome, a terminal, and a bunch of daemons (including Postgres) running. These are all the directly imported dependencies:
 
 ![Sentiment Server Dependencies](dependencies.png)
 
