@@ -145,15 +145,15 @@ func GetHookResponse(j TaskJSON) (string, error) {
 	}
 
 	data := make([]byte, resp.ContentLength)
-	_, err = resp.Body.Read(data)
-	if err != nil {
+	n, err := resp.Body.Read(data)
+	if err != nil && err != io.EOF {
 		return "", fmt.Errorf(`{"message": "ERROR: could not read the body from HOOK GET request", "hook": "%v", "error": "%v"}`, id, err)
 	}
 
 	text := string(data)
 	if hook.Key != "" {
 		bod := make(map[string]interface{})
-		err = json.Unmarshal(data, &bod)
+		err = json.Unmarshal(data[:n], &bod)
 		if err != nil {
 			return "", fmt.Errorf(`{"message": "ERROR: could not unmarshal body from HOOK GET request", "hook": "%v", "error": "%v"}`, id, err)
 		}

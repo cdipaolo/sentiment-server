@@ -46,26 +46,6 @@ type Configuration struct {
 	DefaultHook string          `json:"defaultHook,omitempty"`
 }
 
-// Hook holds information for any
-// hooked requests the consumer might
-// want to make to the POST /task endpoint.
-//
-// When calling POST /task the user passes
-// an ID that is fmt.Sprintf'ed into the URL.
-// As such, the URL in this struct must have
-// some sort of %v type string formattable
-// value!
-type Hook struct {
-	URL     string              `json:"url"`
-	Headers map[string][]string `json:"headers,omitempty"`
-
-	// Key is the key the URL will look for
-	// in returned JSON. If not provided the
-	// Hook will expect the returned values
-	// to be plain text
-	Key string `json:"key,omitempty"`
-}
-
 // init grabs the config from the expected
 // command line args. Else initializes with
 // defaults
