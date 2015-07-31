@@ -24,7 +24,7 @@ var (
 	config string
 )
 
-// Config holds configuration information
+// Configuration holds configuration information
 // for the service
 //
 // Hooks, used for the hooked analysis

@@ -3,7 +3,7 @@ package main
 // AnalyzeJSON holds the expected JSON
 // request info for the POST /analyze
 // endpoint
-type AnalyseJSON struct {
+type AnalyzeJSON struct {
 	Text string `json:"text"`
 }
 

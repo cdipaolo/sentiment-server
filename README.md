@@ -5,6 +5,10 @@ Sentiment Server performs modular sentiment analysis as a drop-in, easy, open so
 
 The server uses [this library](http://github.com/cdipaolo/sentiment) for sentiment analysis. Problems with the sentiment engine itself should be registered there.
 
+The server is _fast_! These are all the directly imported dependencies:
+
+![Sentiment Server Dependencies](dependencies.png)
+
 ### Installation
 
 ```bash

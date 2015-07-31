@@ -38,7 +38,7 @@ func HandleSentiment(r http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	j := AnalyseJSON{}
+	j := AnalyzeJSON{}
 	err = json.Unmarshal(data, &j)
 	if err != nil {
 		r.WriteHeader(http.StatusBadRequest)
