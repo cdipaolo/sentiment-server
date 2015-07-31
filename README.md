@@ -68,7 +68,31 @@ General text classification. Pass it some body of text in the expected format an
 **Returned JSON**
 
 ```json
-
+{
+  "words": [
+    {
+      "word": "this",
+      "score": -0.07602276959089216
+    },
+    {
+      "word": "is",
+      "score": 0
+    },
+    {
+      "word": "an",
+      "score": 0
+    },
+    {
+      "word": "awesome",
+      "score": 0.513978494623656
+    },
+    {
+      "word": "day",
+      "score": 0.1724137931034483
+    }
+  ],
+  "score": 0.6103695181362121
+}
 ```
 
 ### POST /task
@@ -82,12 +106,36 @@ Note that you can omit the `hookId` to just use the default hook instead.
 ```json
 {
     "recordingId": "17",
-    "hookId": "transcripts"
+    "hookId": "comments"
 }
 ```
 
 **Returned JSON**
 
 ```json
-
+{
+  "words": [
+    {
+      "word": "this",
+      "score": -0.07602276959089216
+    },
+    {
+      "word": "is",
+      "score": 0
+    },
+    {
+      "word": "an",
+      "score": 0
+    },
+    {
+      "word": "awesome",
+      "score": 0.513978494623656
+    },
+    {
+      "word": "day",
+      "score": 0.1724137931034483
+    }
+  ],
+  "score": 0.6103695181362121
+}
 ```

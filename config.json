@@ -9,5 +9,6 @@
             "url": "http://jsonplaceholder.typicode.com/comments/%v",
             "key": "name"
         }
-    }
+    },
+    "defaultHook": "comment"
 }
