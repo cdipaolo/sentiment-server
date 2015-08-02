@@ -36,6 +36,8 @@ func HandleStatus(r http.ResponseWriter, req *http.Request) {
 		"totalSuccessfulAnalyses": %v,
 		"hookedRequests": %v
 	}`, count, hookCount)))
+
+	log.Printf("GET / [totalSuccessfulAnalyses = %v]\n", count)
 }
 
 // HandleSentiment takes in a POST with JSON
