@@ -181,26 +181,26 @@ Note that you can omit the `hookId` to just use the default hook instead.
   "words": [
     {
       "word": "this",
-      "score": -0.07602276959089216
+      "score": 0.4972343525245145
     },
     {
       "word": "is",
-      "score": 0
+      "score": 0.5
     },
     {
       "word": "an",
-      "score": 0
+      "score": 0.5
     },
     {
       "word": "awesome",
-      "score": 0.513978494623656
+      "score": 0.66134524907
     },
     {
       "word": "day",
-      "score": 0.1724137931034483
+      "score": 0.5019843751948
     }
   ],
-  "score": 0.6103695181362121
+  "score": 1
 }
 ```
 
