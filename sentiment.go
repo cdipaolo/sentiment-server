@@ -30,6 +30,7 @@ func main() {
 
 	http.Handle("/analyze", Post(HandleSentiment))
 	http.Handle("/task", Post(HandleHookedRequest))
+	http.Handle("/", Get(HandleStatus))
 
 	log.Printf("Listening at http://127.0.0.1%v ...\n", Config.portString)
 	log.Fatal(http.ListenAndServe(Config.portString, nil))

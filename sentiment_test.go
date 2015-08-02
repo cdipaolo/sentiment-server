@@ -39,6 +39,54 @@ func post(pth string, json string) (int, []byte, error) {
 	return resp.StatusCode, body, nil
 }
 
+// get makes a get request to the server
+// at the specified path
+func get(pth string) (int, []byte, error) {
+	resp, err := http.Get(Protocol + path.Join(URL, pth))
+	if err != nil {
+		return 0, nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return 0, nil, err
+	}
+
+	return resp.StatusCode, body, nil
+}
+
+// * GET / tests * //
+
+func TestStatusShouldPass1(t *testing.T) {
+	statusCode, body, err := get("/")
+	if err != nil {
+		t.Errorf("ERROR: error trying to get\n\t%v\n", err)
+	}
+	if statusCode != http.StatusOK {
+		t.Errorf("ERROR: status returned should be 200 OK\n\t%v\n", string(body))
+	}
+	if len(body) == 0 {
+		t.Fatalf("ERROR: body should not be nil!\n")
+	}
+
+	status := struct {
+		Status    string `json:"status"`
+		Count     int64  `json:"totalSuccessfulAnalyses"`
+		HookCount int64  `json:"hookedRequests"`
+	}{}
+	err = json.Unmarshal(body, &status)
+	if err != nil {
+		t.Fatalf("ERROR: error unmarshalling JSON response\n\t%v\n", err)
+	}
+
+	if status.Status != "Up" {
+		t.Errorf("ERROR: health check status should be 'Up'\n\t%+v\n", status)
+	}
+}
+
+// * POST /analyze tests * //
+
 func TestSentimentShouldPass1(t *testing.T) {
 	text := `The anti-immigration people have to invent some explanation to account for all the effort technology companies have expended trying to make immigration easier. So they claim it's because they want to drive down salaries. But if you talk to startups, you find practically every one over a certain size has gone through legal contortions to get programmers into the US, where they then paid them the same as they'd have paid an American. Why would they go to extra trouble to get programmers for the same price? The only explanation is that they're telling the truth: there are just not enough great programmers to go around`
 	txt := fmt.Sprintf(`{

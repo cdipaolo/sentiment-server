@@ -9,10 +9,33 @@ import (
 	"net/url"
 )
 
-var client *http.Client
+var (
+	client    *http.Client
+	count     int64
+	hookCount int64
+)
 
 func init() {
 	client = &http.Client{}
+	count = 0
+	hookCount = 0
+}
+
+// HandleStatus is a simple health-check endpoint
+// that will tell the user the total number of
+// successful analyses and the number of successful
+// hooked requests (a subset of the former) made
+func HandleStatus(r http.ResponseWriter, req *http.Request) {
+	r.Header().Add("Content-Type", "application/json")
+	r.WriteHeader(http.StatusOK)
+
+	// send the total successful count
+	// and total error count
+	r.Write([]byte(fmt.Sprintf(`{
+		"status": "Up",
+		"totalSuccessfulAnalyses": %v,
+		"hookedRequests": %v
+	}`, count, hookCount)))
 }
 
 // HandleSentiment takes in a POST with JSON
@@ -59,6 +82,7 @@ func HandleSentiment(r http.ResponseWriter, req *http.Request) {
 	r.WriteHeader(http.StatusOK)
 	r.Write(resp)
 
+	count++
 	log.Printf("POST /analyze [len(text) = %v]\n", len(j.Text))
 }
 
@@ -118,6 +142,8 @@ func HandleHookedRequest(r http.ResponseWriter, req *http.Request) {
 	r.WriteHeader(http.StatusOK)
 	r.Write(resp)
 
+	hookCount++
+	count++
 	log.Printf("POST /task [len(text) = %v]\n", len(text))
 }
 
