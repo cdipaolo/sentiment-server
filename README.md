@@ -9,6 +9,24 @@ The server is _fast_! A simple benchmark of the `POST /analyze` endpoint (run `g
 
 ![Sentiment Server Dependencies](dependencies.png)
 
+This is a more legit benchmark of the analyze endpoint (`POST /analyze`; same as above mini-bench) endpoint, using [wrk](https://github.com/wg/wrk):
+
+Note that this is analyzing, again, two paragraphs of a Paul Graham essay. It is giving total document sentiment, individual sentence sentiment, and individual word sentiment. Also actually logging that many requests to STDOUT is not trivial with that much throughput. I was running the same stuff mentioned above, and surfing around on the internet while the test was running.
+
+``` bash
+$ wrk -t12 -c400 -d5m -s post.lua http://127.0.0.1:8080/analyze
+
+Running 5m test @ http://127.0.0.1:8080/analyze
+  12 threads and 400 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   103.35ms   26.45ms 403.45ms   77.55%
+    Req/Sec   197.72    133.98   643.00     57.98%
+  699489 requests in 5.00m, 3.43GB read
+  Socket errors: connect 155, read 12, write 0, timeout 0
+Requests/sec:   2330.93
+Transfer/sec:     11.69MB 
+```
+
 ### Installation
 
 ```bash
