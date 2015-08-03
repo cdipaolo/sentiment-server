@@ -49,6 +49,12 @@ Note that if you don't specify a key, the response will be assumed to be in plai
 
 If you want, you may specify a default header so you don't need to tell the API which hook you want each time. This is dont in the config file. If you only specify one hook this will default to be the hook given.
 
+**Time Series Data**
+
+You can have time series hooks which will let you parse data and return it with a format designed to work with time series requests (for example if you are transcoding audio or something.) You just need to add a param to the hook with `"time":true` which will expect the data from the expected key to be in the specified format. 
+
+If you want to know more about this option read the comments on the `Time bool` param of the (`model.go` file)[model.go]. They are very elaborate and would clog up the README so I'm abstracting them to there.
+
 ### Config
 
 Example Config:
