@@ -112,17 +112,17 @@ func ParseConfigFromFile() error {
 func ParseConfigFromURL() error {
 	resp, err := http.Get(config)
 	if err != nil {
-		return fmt.Errorf("ERROR: error making GET request to given url: %v", config)
+		return fmt.Errorf("ERROR: error making GET request to given url: %v. Error = %v", config, err)
 	}
 
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return fmt.Errorf("ERROR: error reading config data from GET url response. URL: %v", config)
+		return fmt.Errorf("ERROR: error reading config data from GET url response. URL: %v. Error = %v", config, err)
 	}
 
 	err = json.Unmarshal(data, &Config)
 	if err != nil {
-		return fmt.Errorf("ERROR: error unmarshalling config data from response body. URL: %v", config)
+		return fmt.Errorf("ERROR: error unmarshalling config data from response body. URL: %v. Error = %v", config, err)
 	}
 
 	if Config.Port == 0 {
