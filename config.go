@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -114,13 +115,15 @@ func ParseConfigFromURL() error {
 		return fmt.Errorf("ERROR: error making GET request to given url: %v", config)
 	}
 
-	data := make([]byte, resp.ContentLength)
-	n, err := resp.Body.Read(data)
+	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return fmt.Errorf("ERROR: error reading config data from GET url response. URL: %v", config)
 	}
 
-	json.Unmarshal(data[:n], &Config)
+	err = json.Unmarshal(data, &Config)
+	if err != nil {
+		return fmt.Errorf("ERROR: error unmarshalling config data from response body. URL: %v", config)
+	}
 
 	if Config.Port == 0 {
 		Config.Port = 8080
