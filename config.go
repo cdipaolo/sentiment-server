@@ -5,6 +5,8 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 )
@@ -55,11 +57,11 @@ func init() {
 	flag.StringVar(&config, "C", configPath, "(shorthand for -conf)")
 }
 
-// ParseConfig must be run after the
-// flag.Parse() function has been run
+// ParseConfigFromFile must be run after
+// the flag.Parse() function has been run
 // to set the global configuration
 // variable
-func ParseConfig() error {
+func ParseConfigFromFile() error {
 	path, err := filepath.Abs(config)
 	if err != nil {
 		return fmt.Errorf("ERROR: error generating absolute path from given config path. Does the file exist? %v", err)
@@ -83,6 +85,76 @@ func ParseConfig() error {
 	err = json.Unmarshal(bytes[:n], &Config)
 	if err != nil {
 		return fmt.Errorf("ERROR: error unmarshalling given config file into a Config struct: %v", err)
+	}
+
+	if Config.Port == 0 {
+		Config.Port = 8080
+	}
+
+	Config.portString = fmt.Sprintf(":%v", Config.Port)
+
+	if Config.DefaultHook == "" {
+		for id := range Config.Hooks {
+			Config.DefaultHook = id
+		}
+	}
+
+	return nil
+}
+
+// ParseConfigFromURL pulls the config
+// from a URL by making a get request
+//
+// This expects that the config path
+// is, in fact, a URL routing to
+// either HTTP or HTTPS
+func ParseConfigFromURL() error {
+	resp, err := http.Get(config)
+	if err != nil {
+		return fmt.Errorf("ERROR: error making GET request to given url: %v", config)
+	}
+
+	data := make([]byte, resp.ContentLength)
+	n, err := resp.Body.Read(data)
+	if err != nil {
+		return fmt.Errorf("ERROR: error reading config data from GET url response. URL: %v", config)
+	}
+
+	json.Unmarshal(data[:n], &Config)
+
+	if Config.Port == 0 {
+		Config.Port = 8080
+	}
+
+	Config.portString = fmt.Sprintf(":%v", Config.Port)
+
+	if Config.DefaultHook == "" {
+		for id := range Config.Hooks {
+			Config.DefaultHook = id
+		}
+	}
+
+	return nil
+}
+
+// ParseConfig determines whether
+// the config is at a URL or a file,
+// unmarshals and munges the
+// configuration, and returns
+// any errors.
+func ParseConfig() error {
+	var err error
+
+	// check if file
+	u, err := url.Parse(config)
+	if err != nil || !(u.Scheme == "http" || u.Scheme == "https") {
+		err = ParseConfigFromFile()
+	} else {
+		err = ParseConfigFromURL()
+	}
+
+	if err != nil {
+		return err
 	}
 
 	if Config.Port == 0 {
