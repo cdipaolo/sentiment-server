@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -73,17 +72,13 @@ func ParseConfigFromFile() error {
 		return fmt.Errorf("ERROR: error opening config file: %v", err)
 	}
 
-	// read file into buffer
-	// 1KB should be enough for
-	// a reasonable config file
-	bytes := make([]byte, 1024)
-	n, err := f.Read(bytes)
-	if err != nil && err != io.EOF {
-		return fmt.Errorf("ERROR: error reading config file into buffer: %v", err)
+	bytes, err := ioutil.ReadAll(f)
+	if err != nil {
+		return fmt.Errorf("ERROR: error reading config file from filepath. Path: %v. Error = %v", config, err)
 	}
 
 	// unmarshal file into Config struct
-	err = json.Unmarshal(bytes[:n], &Config)
+	err = json.Unmarshal(bytes, &Config)
 	if err != nil {
 		return fmt.Errorf("ERROR: error unmarshalling given config file into a Config struct: %v", err)
 	}

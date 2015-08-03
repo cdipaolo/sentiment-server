@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -55,8 +56,7 @@ func HandleSentiment(r http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	data := make([]byte, req.ContentLength)
-	_, err := req.Body.Read(data)
+	data, err := ioutil.ReadAll(req.Body)
 	if err != nil && err != io.EOF {
 		r.WriteHeader(http.StatusInternalServerError)
 		r.Write([]byte(fmt.Sprintf(`{"message": "ERROR: error reading request body", "error": "%v"}`, err.Error())))
@@ -106,8 +106,7 @@ func HandleHookedRequest(r http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	data := make([]byte, req.ContentLength)
-	_, err := req.Body.Read(data)
+	data, err := ioutil.ReadAll(req.Body)
 	if err != nil && err != io.EOF {
 		r.WriteHeader(http.StatusInternalServerError)
 		r.Write([]byte(fmt.Sprintf(`{"message": "ERROR: error reading request body", "error": "%v"}`, err.Error())))
@@ -197,8 +196,7 @@ func GetHookResponse(j TaskJSON) ([]TimeSeries, string, error) {
 		return nil, "", fmt.Errorf(`{"message": "ERROR: could not complete HOOK request", "hook": "%v", "error": "%v"}`, id, err)
 	}
 
-	data := make([]byte, resp.ContentLength)
-	n, err := resp.Body.Read(data)
+	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil && err != io.EOF {
 		return nil, "", fmt.Errorf(`{"message": "ERROR: could not read the body from HOOK GET request", "hook": "%v", "error": "%v"}`, id, err)
 	}
@@ -207,7 +205,7 @@ func GetHookResponse(j TaskJSON) ([]TimeSeries, string, error) {
 	var timeSeries []TimeSeries
 	if hook.Key != "" && !hook.Time {
 		bod := make(map[string]interface{})
-		err = json.Unmarshal(data[:n], &bod)
+		err = json.Unmarshal(data, &bod)
 		if err != nil {
 			return nil, "", fmt.Errorf(`{"message": "ERROR: could not unmarshal body from HOOK GET request", "hook": "%v", "error": "%v"}`, id, err)
 		}
@@ -224,7 +222,7 @@ func GetHookResponse(j TaskJSON) ([]TimeSeries, string, error) {
 	}
 	if hook.Key != "" && hook.Time {
 		bod := make(map[string]interface{})
-		err = json.Unmarshal(data[:n], &bod)
+		err = json.Unmarshal(data, &bod)
 		if err != nil {
 			return nil, "", fmt.Errorf(`{"message": "ERROR: could not unmarshal body from HOOK GET request", "hook": "%v", "error": "%v"}`, id, err)
 		}
@@ -234,7 +232,7 @@ func GetHookResponse(j TaskJSON) ([]TimeSeries, string, error) {
 		// in the interface{} for type assertion
 		timeSeriesJSON, err := json.Marshal(bod[hook.Key])
 		if err != nil {
-			return nil, "", fmt.Errorf(`{"message": "ERROR: could not marshal (what should be an) array with the given key from HOOK GET request", "hook": "%v", "expectedId": "%v", "body": %v}`, id, hook.Key, string(data[:n]))
+			return nil, "", fmt.Errorf(`{"message": "ERROR: could not marshal (what should be an) array with the given key from HOOK GET request", "hook": "%v", "expectedId": "%v", "body": %v}`, id, hook.Key, string(data))
 		}
 
 		// and back out again!
@@ -256,7 +254,7 @@ func GetHookResponse(j TaskJSON) ([]TimeSeries, string, error) {
 		text = TurnTimeSeriesIntoText(timeSeries)
 	}
 	if hook.Key == "" && hook.Time {
-		err = json.Unmarshal(data[:n], &timeSeries)
+		err = json.Unmarshal(data, &timeSeries)
 		if err != nil {
 			return nil, "", fmt.Errorf(`{"message": "ERROR: could not unmarshal body from HOOK GET request into type []TimeSeries", "hook": "%v", "error": "%v"}`, id, err)
 		}
