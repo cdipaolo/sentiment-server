@@ -155,7 +155,7 @@ func TestSentimentShouldFail2(t *testing.T) {
 // * Hooked Requests * //
 
 func TestHookedSentimentShouldPass1(t *testing.T) {
-	text, err := GetHookResponse(TaskJSON{
+	ts, text, err := GetHookResponse(TaskJSON{
 		ID:     "1",
 		HookID: "comment",
 	})
@@ -183,6 +183,10 @@ func TestHookedSentimentShouldPass1(t *testing.T) {
 		t.Fatalf("ERROR: error unmarshalling JSON response\n\t%v\n", err)
 	}
 
+	if ts != nil {
+		t.Errorf("ERROR: time series should be nil!\n\t%v\n", ts)
+	}
+
 	should := model.SentimentAnalysis(text)
 	if should.Score != analysis.Score {
 		t.Errorf("ERROR: responded text sentiment score should equal the same score from the library!\n\tShould be: %v\n\tReturned: %v\n", should.Score, analysis.Score)
@@ -193,7 +197,7 @@ func TestHookedSentimentShouldPass1(t *testing.T) {
 }
 
 func TestHookedSentimentShouldPass2(t *testing.T) {
-	text, err := GetHookResponse(TaskJSON{
+	ts, text, err := GetHookResponse(TaskJSON{
 		ID:     "1",
 		HookID: "post",
 	})
@@ -221,6 +225,10 @@ func TestHookedSentimentShouldPass2(t *testing.T) {
 		t.Fatalf("ERROR: error unmarshalling JSON response\n\t%v\n", err)
 	}
 
+	if ts != nil {
+		t.Errorf("ERROR: time series should be nil!\n\t%v\n", ts)
+	}
+
 	should := model.SentimentAnalysis(text)
 	if should.Score != analysis.Score {
 		t.Errorf("ERROR: responded text sentiment score should equal the same score from the library!\n\tShould be: %v\n\tReturned: %v\n", should.Score, analysis.Score)
@@ -232,7 +240,7 @@ func TestHookedSentimentShouldPass2(t *testing.T) {
 
 // test default hook settings
 func TestHookedSentimentShouldPass3(t *testing.T) {
-	text, err := GetHookResponse(TaskJSON{
+	ts, text, err := GetHookResponse(TaskJSON{
 		ID:     "1",
 		HookID: "post",
 	})
@@ -257,6 +265,10 @@ func TestHookedSentimentShouldPass3(t *testing.T) {
 	err = json.Unmarshal(body, &analysis)
 	if err != nil {
 		t.Fatalf("ERROR: error unmarshalling JSON response\n\t%v\n", err)
+	}
+
+	if ts != nil {
+		t.Errorf("ERROR: time series should be nil!\n\t%v\n", ts)
 	}
 
 	should := model.SentimentAnalysis(text)

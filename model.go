@@ -1,5 +1,19 @@
 package main
 
+import (
+	"github.com/cdipaolo/sentiment"
+)
+
+// TimeSeriesResponse returns the
+// normal analysis response within
+// a "metadata" key, as well as
+// the analysis of the time series
+// data within a key called "series"
+type TimeSeriesResponse struct {
+	Metadata *sentiment.Analysis `json:"metadata,omitempty"`
+	Series   []TimeSeries        `json:"series"`
+}
+
 // AnalyzeJSON holds the expected JSON
 // request info for the POST /analyze
 // endpoint
@@ -50,12 +64,12 @@ type Hook struct {
 	// {
 	//   "key": [
 	//      {
-	// 		  "start": 0,
+	//        "start": 0,
 	//        "end": 16.016,
 	//        "text": "This is some great text!"
 	//      },
 	//      {
-	//		  "start": 16.016,
+	//        "start": 16.016,
 	//        "end": 24.014,
 	//        "text": "I really hate this sentence though..."
 	//      }
@@ -76,7 +90,7 @@ type Hook struct {
 	// {
 	//   "key": [
 	//     {
-	//	     "start": 0,
+	//       "start": 0,
 	//       "end": 16.016,
 	//       "score": 1
 	//     },
@@ -88,5 +102,22 @@ type Hook struct {
 	//   ]
 	//   "metadata": ...
 	// }
+	//
+	// If this flag is passed and there is
+	// no Key given, the hook will be expected
+	// to return an array of TimeSeries as the
+	// top level JSON object.
 	Time bool `json:"time,omitempty"`
+}
+
+// TimeSeries holds the expected format
+// for time series data, both in response
+// and in requests. Look at the Hook docs
+// for Time to get a sense of how this works.
+type TimeSeries struct {
+	Start float64 `json:"start"`
+	End   float64 `json:"end"`
+
+	Text  string  `json:"text,omitempty"`
+	Score float64 `json:"score,omitempty"`
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -124,7 +125,7 @@ func HandleHookedRequest(r http.ResponseWriter, req *http.Request) {
 	}
 
 	// * Perform the GET hook * //
-	text, err := GetHookResponse(j)
+	series, text, err := GetHookResponse(j)
 	if err != nil {
 		r.WriteHeader(http.StatusInternalServerError)
 		r.Write([]byte(fmt.Sprintf(`{"message": "ERROR: unable to get text from hook request with configured parameters", "error": %v}`, err)))
@@ -132,8 +133,22 @@ func HandleHookedRequest(r http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	resp := []byte{}
+
 	analysis := model.SentimentAnalysis(text)
-	resp, err := json.Marshal(analysis)
+
+	if series == nil {
+		resp, err = json.Marshal(analysis)
+	} else {
+		for i := range series {
+			series[i].Score = model.SentimentOfSentence(series[i].Text)
+		}
+		resp, err = json.Marshal(TimeSeriesResponse{
+			Metadata: analysis,
+			Series:   series,
+		})
+	}
+
 	if err != nil {
 		r.WriteHeader(http.StatusInternalServerError)
 		r.Write([]byte(fmt.Sprintf(`{"message": "ERROR: unable to marshal sentiment analysis into JSON", "error": "%v"}`, err.Error())))
@@ -155,7 +170,7 @@ func HandleHookedRequest(r http.ResponseWriter, req *http.Request) {
 // the JSON field from the param specified
 // within the hook declaration (and expecting
 // plain text result if the param is blank
-func GetHookResponse(j TaskJSON) (string, error) {
+func GetHookResponse(j TaskJSON) ([]TimeSeries, string, error) {
 	id := Config.DefaultHook
 	if j.HookID != "" {
 		id = j.HookID
@@ -163,12 +178,12 @@ func GetHookResponse(j TaskJSON) (string, error) {
 
 	hook, ok := Config.Hooks[id]
 	if !ok {
-		return "", fmt.Errorf(`{"message": "ERROR: hook given was not found in your configured hooks!", "hookId": "%v", "defaultHook": "%v"}`, id, Config.DefaultHook)
+		return nil, "", fmt.Errorf(`{"message": "ERROR: hook given was not found in your configured hooks!", "hookId": "%v", "defaultHook": "%v"}`, id, Config.DefaultHook)
 	}
 
 	url, err := url.Parse(fmt.Sprintf(hook.URL, j.ID))
 	if err != nil {
-		return "", fmt.Errorf(`{"message": "ERROR: unable to format the given ID into the configured hook ID", "hookUrl": "%v", "id":"%v"}`, hook.URL, id)
+		return nil, "", fmt.Errorf(`{"message": "ERROR: unable to format the given ID into the configured hook ID", "hookUrl": "%v", "id":"%v"}`, hook.URL, id)
 	}
 
 	request := &http.Request{
@@ -179,33 +194,74 @@ func GetHookResponse(j TaskJSON) (string, error) {
 
 	resp, err := client.Do(request)
 	if err != nil {
-		return "", fmt.Errorf(`{"message": "ERROR: could not complete HOOK request", "hook": "%v", "error": "%v"}`, id, err)
+		return nil, "", fmt.Errorf(`{"message": "ERROR: could not complete HOOK request", "hook": "%v", "error": "%v"}`, id, err)
 	}
 
 	data := make([]byte, resp.ContentLength)
 	n, err := resp.Body.Read(data)
 	if err != nil && err != io.EOF {
-		return "", fmt.Errorf(`{"message": "ERROR: could not read the body from HOOK GET request", "hook": "%v", "error": "%v"}`, id, err)
+		return nil, "", fmt.Errorf(`{"message": "ERROR: could not read the body from HOOK GET request", "hook": "%v", "error": "%v"}`, id, err)
 	}
 
 	text := string(data)
-	if hook.Key != "" {
+	var timeSeries []TimeSeries
+	if hook.Key != "" && !hook.Time {
 		bod := make(map[string]interface{})
 		err = json.Unmarshal(data[:n], &bod)
 		if err != nil {
-			return "", fmt.Errorf(`{"message": "ERROR: could not unmarshal body from HOOK GET request", "hook": "%v", "error": "%v"}`, id, err)
+			return nil, "", fmt.Errorf(`{"message": "ERROR: could not unmarshal body from HOOK GET request", "hook": "%v", "error": "%v"}`, id, err)
 		}
 
 		tmp, ok := bod[hook.Key]
 		if !ok {
-			return "", fmt.Errorf(`{"message": "ERROR: could not get text with the given key from HOOK GET request", "hook": "%v", "expectedId": "%v"}`, id, hook.Key)
+			return nil, "", fmt.Errorf(`{"message": "ERROR: could not get text with the given key from HOOK GET request", "hook": "%v", "expectedId": "%v"}`, id, hook.Key)
 		}
 
 		text, ok = tmp.(string)
 		if !ok {
-			return "", fmt.Errorf(`{"message": "ERROR: could not assert HOOK GET request body to type string", "hook": "%v"}`, id)
+			return nil, "", fmt.Errorf(`{"message": "ERROR: could not assert HOOK GET request body to type string", "hook": "%v"}`, id)
 		}
 	}
+	if hook.Key != "" && hook.Time {
+		bod := make(map[string]interface{})
+		err = json.Unmarshal(data[:n], &bod)
+		if err != nil {
+			return nil, "", fmt.Errorf(`{"message": "ERROR: could not unmarshal body from HOOK GET request", "hook": "%v", "error": "%v"}`, id, err)
+		}
 
-	return text, nil
+		tmp, ok := bod[hook.Key]
+		if !ok {
+			return nil, "", fmt.Errorf(`{"message": "ERROR: could not get text with the given key from HOOK GET request", "hook": "%v", "expectedId": "%v"}`, id, hook.Key)
+		}
+
+		timeSeries, ok = tmp.([]TimeSeries)
+		if !ok {
+			return nil, "", fmt.Errorf(`{"message": "ERROR: could not assert HOOK GET request body to type []TimeSeries", "hook": "%v"}`, id)
+		}
+
+		text = TurnTimeSeriesIntoText(timeSeries)
+	}
+	if hook.Key == "" && hook.Time {
+		err = json.Unmarshal(data[:n], &timeSeries)
+		if err != nil {
+			return nil, "", fmt.Errorf(`{"message": "ERROR: could not unmarshal body from HOOK GET request into type []TimeSeries", "hook": "%v", "error": "%v"}`, id, err)
+		}
+
+		text = TurnTimeSeriesIntoText(timeSeries)
+	}
+
+	return timeSeries, text, nil
+}
+
+// TurnTimeSeriesIntoText compiles all the text values
+// within an []TimeSeries into one string for use
+// with regular analysis
+func TurnTimeSeriesIntoText(ts []TimeSeries) string {
+	var text bytes.Buffer
+	for i := range ts {
+		text.WriteString(ts[i].Text)
+		text.WriteString(" ")
+	}
+
+	return text.String()
 }
