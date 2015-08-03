@@ -34,6 +34,59 @@ type Hook struct {
 	// Key is the key the URL will look for
 	// in returned JSON. If not provided the
 	// Hook will expect the returned values
-	// to be plain text
+	// to be plain text. Following format
+	// expected:
+	//
+	// {
+	//   "key": "this is my text to be analyzed!"
+	// }
 	Key string `json:"key,omitempty"`
+
+	// Time tells the hook request that the
+	// hook will return text within time
+	// buckets. This expects the following
+	// format for a response:
+	//
+	// {
+	//   "key": [
+	//      {
+	// 		  "start": 0,
+	//        "end": 16.016,
+	//        "text": "This is some great text!"
+	//      },
+	//      {
+	//		  "start": 16.016,
+	//        "end": 24.014,
+	//        "text": "I really hate this sentence though..."
+	//      }
+	//   ]
+	//   ...
+	// }
+	//
+	// If this is given the format returned
+	// to the API consumer will be the same,
+	// but also add in a "timed" section
+	// which maps each time bucket to the
+	// corresponding text within it to the
+	// sentiment of the text within that
+	// bucket. All the normal analysis will
+	// be moved into a "metadata" parameter.
+	// Example:
+	//
+	// {
+	//   "key": [
+	//     {
+	//	     "start": 0,
+	//       "end": 16.016,
+	//       "score": 1
+	//     },
+	//     {
+	//       "start": 16.016,
+	//       "end": 24.014
+	//       "score": 0
+	//     }
+	//   ]
+	//   "metadata": ...
+	// }
+	Time bool `json:"time,omitempty"`
 }
