@@ -247,8 +247,8 @@ func GetHookResponse(j TaskJSON) ([]TimeSeries, string, error) {
 		timeSeries = []TimeSeries{}
 		for i := range t {
 			timeSeries = append(timeSeries, TimeSeries{
-				Start: t[i].Start,
-				End:   t[i].End,
+				Start: t[i].Start * 1000.0,
+				End:   t[i].End * 1000.0,
 				Text:  t[i].Text,
 			})
 		}
