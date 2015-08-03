@@ -238,9 +238,19 @@ func GetHookResponse(j TaskJSON) ([]TimeSeries, string, error) {
 		}
 
 		// and back out again!
-		err = json.Unmarshal(timeSeriesJSON, &timeSeries)
+		t := []TimeSeriesRequest{}
+		err = json.Unmarshal(timeSeriesJSON, &t)
 		if err != nil {
 			return nil, "", fmt.Errorf(`{"message": "ERROR: could not unmarshal series with the given key from HOOK GET request", "hook": "%v", "series": %v}`, id, hook.Key, string(timeSeriesJSON))
+		}
+
+		timeSeries = []TimeSeries{}
+		for i := range t {
+			timeSeries = append(timeSeries, TimeSeries{
+				Start: t[i].Start,
+				End:   t[i].End,
+				Text:  t[i].Text,
+			})
 		}
 
 		text = TurnTimeSeriesIntoText(timeSeries)

@@ -111,13 +111,19 @@ type Hook struct {
 }
 
 // TimeSeries holds the expected format
-// for time series data, both in response
-// and in requests. Look at the Hook docs
-// for Time to get a sense of how this works.
+// for time series data response. Look at
+// the Hook docs for Time to get a sense
+// of how this works.
 type TimeSeries struct {
 	Start float64 `json:"start"`
 	End   float64 `json:"end"`
 
-	Text  string  `json:"text,omitempty"`
-	Score float64 `json:"score,omitempty"`
+	Text  string  `json:"text"`
+	Score float64 `json:"Score"`
+}
+
+type TimeSeriesRequest struct {
+	Start float64 `json:"start"`
+	End   float64 `json:"end"`
+	Text  string  `json:"text"`
 }
