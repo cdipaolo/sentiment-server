@@ -229,14 +229,18 @@ func GetHookResponse(j TaskJSON) ([]TimeSeries, string, error) {
 			return nil, "", fmt.Errorf(`{"message": "ERROR: could not unmarshal body from HOOK GET request", "hook": "%v", "error": "%v"}`, id, err)
 		}
 
-		tmp, ok := bod[hook.Key]
-		if !ok {
-			return nil, "", fmt.Errorf(`{"message": "ERROR: could not get text with the given key from HOOK GET request", "hook": "%v", "expectedId": "%v"}`, id, hook.Key)
+		// have to marshal into JSON and back out
+		// of JSON to ignore the extra fields possibly
+		// in the interface{} for type assertion
+		timeSeriesJSON, err := json.Marshal(bod[hook.Key])
+		if err != nil {
+			return nil, "", fmt.Errorf(`{"message": "ERROR: could not marshal (what should be an) array with the given key from HOOK GET request", "hook": "%v", "expectedId": "%v", "body": %v}`, id, hook.Key, string(data[:n]))
 		}
 
-		timeSeries, ok = tmp.([]TimeSeries)
-		if !ok {
-			return nil, "", fmt.Errorf(`{"message": "ERROR: could not assert HOOK GET request body to type []TimeSeries", "hook": "%v"}`, id)
+		// and back out again!
+		err = json.Unmarshal(timeSeriesJSON, &timeSeries)
+		if err != nil {
+			return nil, "", fmt.Errorf(`{"message": "ERROR: could not unmarshal series with the given key from HOOK GET request", "hook": "%v", "series": %v}`, id, hook.Key, string(timeSeriesJSON))
 		}
 
 		text = TurnTimeSeriesIntoText(timeSeries)
