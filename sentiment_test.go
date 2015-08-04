@@ -18,6 +18,8 @@ const (
 )
 
 func init() {
+	// create test handlers for hooks
+
 	go main()
 }
 

@@ -28,6 +28,13 @@ func init() {
 // successful analyses and the number of successful
 // hooked requests (a subset of the former) made
 func HandleStatus(r http.ResponseWriter, req *http.Request) {
+	// have to check that the URL is
+	// exactly /
+	if req.URL.Path != "/" {
+		http.NotFound(r, req)
+		return
+	}
+
 	r.Header().Add("Content-Type", "application/json")
 	r.WriteHeader(http.StatusOK)
 
