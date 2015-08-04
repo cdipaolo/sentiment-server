@@ -124,6 +124,9 @@ type TimeSeries struct {
 	Score float64 `json:"Score"`
 }
 
+// TimeSeriesRequest holds the expected
+// format for temporal data _returned
+// from a GET hook_
 type TimeSeriesRequest struct {
 	Start float64 `json:"start"`
 	End   float64 `json:"end"`
