@@ -88,15 +88,17 @@ type Hook struct {
 	// Example:
 	//
 	// {
-	//   "key": [
+	//   "series": [
 	//     {
 	//       "start": 0,
 	//       "end": 16.016,
+	//       "text": "This is some great text!",
 	//       "score": 1
 	//     },
 	//     {
 	//       "start": 16.016,
-	//       "end": 24.014
+	//       "end": 24.014,
+	//       "text": "I really hate this sentence though...",
 	//       "score": 0
 	//     }
 	//   ]
