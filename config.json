@@ -2,12 +2,26 @@
     "port": 8080,
     "hooks": {
         "post": {
-            "url": "http://jsonplaceholder.typicode.com/posts/%v",
-            "key": "body"
+            "url": "http://127.0.0.1:8080/test/post/%v"
         },
         "comment": {
-            "url": "http://jsonplaceholder.typicode.com/comments/%v",
-            "key": "name"
+            "url": "http://127.0.0.1:8080/test/comment/%v",
+            "key": "text",
+            "headers": {
+                "Auth": ["SUPER_SECRET"]
+            }
+        },
+        "temporal": {
+            "url": "http://127.0.0.1:8080/test/temporal/%v",
+            "key": "series",
+            "time": true
+        },
+        "temporalArray": {
+            "url": "http://127.0.0.1:8080/test/temporal/%v",
+            "headers": {
+                "Array": ["true"]
+            },
+            "time": true
         }
     },
     "defaultHook": "post"

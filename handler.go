@@ -263,7 +263,7 @@ func GetHookResponse(j TaskJSON) ([]TimeSeries, string, error) {
 	if hook.Key == "" && hook.Time {
 		err = json.Unmarshal(data, &timeSeries)
 		if err != nil {
-			return nil, "", fmt.Errorf(`{"message": "ERROR: could not unmarshal body from HOOK GET request into type []TimeSeries", "hook": "%v", "error": "%v"}`, id, err)
+			return nil, "", fmt.Errorf(`{"message": "ERROR: could not unmarshal body from HOOK GET request into type []TimeSeries", "hook": "%v", "error": "%v", body: %v}`, id, err, string(data))
 		}
 
 		text = TurnTimeSeriesIntoText(timeSeries)
