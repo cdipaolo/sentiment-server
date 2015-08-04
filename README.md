@@ -36,6 +36,13 @@ $ go install github.com/cdipaolo/sentiment-server
 # assuming $GOPATH/bin is in your $PATH
 $ sentiment-server -C=/path/to/my/configuration
 2015/07/31 00:30:45 Listening at http://127.0.0.1:8080 ...
+
+# you can also give a HTTP or HTTPS URL
+# of a config file (just plain GET, no auth)
+# and it'll use that as the config
+#
+# note that you can also use -conf instead of -C
+$ sentiment-server -conf=http://config.io/my/config.json
 ```
 
 <a id="hooks"></a>
