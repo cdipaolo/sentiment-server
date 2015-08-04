@@ -1,6 +1,8 @@
 ## Sentiment Server
 ### Web Server For Performing Sentiment Analysis
 
+[![wercker status](https://app.wercker.com/status/8383bada36ee32ed19d7d635a2cc40ac/s "wercker status")](https://app.wercker.com/project/bykey/8383bada36ee32ed19d7d635a2cc40ac)
+
 Sentiment Server performs modular sentiment analysis as a drop-in, easy, open source solution. Getting responses is as easy as `POST /analysis`. The cool part is that you can add in hooks to APIs upon which you can make abbreviated requests. See [hooks](#hooks) for details.
 
 The server uses [this library](http://github.com/cdipaolo/sentiment) for sentiment analysis. Problems with the sentiment engine itself should be registered there. The model is a Naive Bayes classifier trained on the training set from the IMDB movie review corpus (about 85,000 words!)
