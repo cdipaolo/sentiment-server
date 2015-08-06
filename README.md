@@ -82,6 +82,7 @@ Example Config:
         },
         "comment": {
             "url": "http://jsonplaceholder.typicode.com/comments/%v",
+            "lang": "en"
         }
     },
     "defaultHook": "comment"
@@ -96,11 +97,14 @@ General text classification. Pass it some body of text in the expected format an
 
 Note that all text is converted to lowercase and only letters in a-z are kept (numbers, etc. are taken out.)
 
+Not giving a language will default it to English. Languages must be implemented in [the engine](https://github.com/cdipaolo/sentiment), else they will default to English as well.
+
 **Expected JSON**
 
 ```json
 {
-    "text": "I'm not sure I like your tone right now. I do love you as a person, though."
+    "text": "I'm not sure I like your tone right now. I do love you as a person, though.",
+    "lang": "en"
 }
 ```
 
