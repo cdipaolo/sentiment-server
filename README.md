@@ -7,13 +7,13 @@ Sentiment Server performs modular sentiment analysis as a drop-in, easy, open so
 
 The server uses [this library](http://github.com/cdipaolo/sentiment) for sentiment analysis. Problems with the sentiment engine itself should be registered there. The model is a Naive Bayes classifier trained on the training set from the IMDB movie review corpus (about 85,000 words!)
 
-The server is _fast_! A simple benchmark of the `POST /analyze` endpoint (run `go test -bench .` in the project dir) gives an average time at the server of 1.0996ms, including routing, calculating sentiment, etc. for a few paragraphs from a Paul Graham essay with individual analysis for words and sentences as well as the document as a whole on a 2014 Macbook Air with iTunes, Chrome, a terminal, and a bunch of daemons (including Postgres) running. These are all the directly imported dependencies:
+The server is _fast_! A simple benchmark of the `POST /analyze` endpoint (run `go test -bench .` in the project dir) gives an average time at the server of 1.227ms, including routing, calculating sentiment, etc. for a few paragraphs from a Paul Graham essay with individual analysis for words and sentences as well as the document as a whole on a 2014 Macbook Air with iTunes, Chrome, a terminal, and a bunch of daemons (including Postgres) running. These are all the directly imported dependencies:
 
 ![Sentiment Server Dependencies](dependencies.png)
 
 This is a more legit benchmark of the analyze endpoint (`POST /analyze`; same as above mini-bench) endpoint, using [wrk](https://github.com/wg/wrk):
 
-Note that this is analyzing, again, two paragraphs of a Paul Graham essay. It is giving total document sentiment, individual sentence sentiment, and individual word sentiment. Also actually logging that many requests to STDOUT is not trivial with that much throughput. I was running the same stuff mentioned above, and surfing around on the internet while the test was running.
+Note that this is analyzing, again, two paragraphs of a Paul Graham essay. It is giving total document sentiment, individual sentence sentiment, and individual word sentiment. Also, actually logging that many requests to STDOUT is not trivial with that much throughput. I was running the same stuff mentioned above.
 
 ``` bash
 $ wrk -t12 -c400 -d5m -s post.lua http://127.0.0.1:8080/analyze
@@ -21,12 +21,12 @@ $ wrk -t12 -c400 -d5m -s post.lua http://127.0.0.1:8080/analyze
 Running 5m test @ http://127.0.0.1:8080/analyze
   12 threads and 400 connections
   Thread Stats   Avg      Stdev     Max   +/- Stdev
-    Latency   103.35ms   26.45ms 403.45ms   77.55%
-    Req/Sec   197.72    133.98   643.00     57.98%
-  699489 requests in 5.00m, 3.43GB read
-  Socket errors: connect 155, read 12, write 0, timeout 0
-Requests/sec:   2330.93
-Transfer/sec:     11.69MB 
+    Latency   230.87ms   91.25ms 844.22ms   74.60%
+    Req/Sec   146.41    109.14   485.00     63.89%
+  514583 requests in 5.00m, 1.81GB read
+  Socket errors: connect 0, read 272, write 13, timeout 0
+Requests/sec:   1714.69
+Transfer/sec:      6.17MB
 ```
 
 ### Installation
