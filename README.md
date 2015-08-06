@@ -115,71 +115,71 @@ Not giving a language will default it to English. Languages must be implemented 
   "words": [
     {
       "word": "im",
-      "score": 0.5
+      "score": 0
     },
     {
       "word": "not",
-      "score": 0.4675036438319862
+      "score": 0
     },
     {
       "word": "sure",
-      "score": 0.4648956356736243
+      "score": 1
     },
     {
       "word": "i",
-      "score": 0.5
+      "score": 0
     },
     {
       "word": "like",
-      "score": 0.4444105070250458
+      "score": 1
     },
     {
       "word": "your",
-      "score": 0.43021812378081226
+      "score": 1
     },
     {
       "word": "tone",
-      "score": 0.5729166666666666
+      "score": 1
     },
     {
       "word": "right",
-      "score": 0.5149606299212599
+      "score": 1
     },
     {
       "word": "now",
-      "score": 0.5145454545454546
+      "score": 1
     },
     {
       "word": "i",
-      "score": 0.5
+      "score": 0
     },
     {
       "word": "do",
-      "score": 0.5
+      "score": 1
     },
     {
       "word": "love",
-      "score": 0.6674710424710425
+      "score": 1
     },
     {
       "word": "you",
-      "score": 0.4928460025767953
+      "score": 0
     },
     {
       "word": "as",
-      "score": 0.5
+      "score": 1
     },
     {
       "word": "a",
-      "score": 0.5
+      "score": 0
     },
     {
       "word": "person",
-      "score": 0.47062750333778364
+      "score": 0
     },
     {
       "word": "though",
-      "score": 0.5446105072463768
+      "score": 1
     }
   ],
   "sentences": [
@@ -218,23 +218,23 @@ Note that you can omit the `hookId` to just use the default hook instead.
   "words": [
     {
       "word": "this",
-      "score": 0.4972343525245145
+      "score": 0
     },
     {
       "word": "is",
-      "score": 0.5
+      "score": 1
     },
     {
       "word": "an",
-      "score": 0.5
+      "score": 1
     },
     {
       "word": "awesome",
-      "score": 0.66134524907
+      "score": 1
     },
     {
       "word": "day",
-      "score": 0.5019843751948
+      "score": 1
     }
   ],
   "score": 1
