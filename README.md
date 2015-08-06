@@ -62,7 +62,7 @@ If you want, you may specify a default header so you don't need to tell the API 
 
 You can have time series hooks which will let you parse data and return it with a format designed to work with time series requests (for example if you are transcoding audio or something.) You just need to add a param to the hook with `"time":true` which will expect the data from the expected key to be in the specified format. 
 
-If you want to know more about this option read the comments on the `Time bool` param of the (`model.go` file)[model.go]. They are very elaborate and would clog up the README so I'm abstracting them to there.
+If you want to know more about this option read the comments on the `Time bool` param of the [`model.go` file](model.go). They are very elaborate and would clog up the README so I'm abstracting them to there.
 
 ### Config
 
