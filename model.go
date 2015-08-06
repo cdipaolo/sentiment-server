@@ -130,7 +130,7 @@ type TimeSeries struct {
 	End   float64 `json:"end"`
 
 	Text  string `json:"text"`
-	Score uint8  `json:"Score"`
+	Score uint8  `json:"score"`
 }
 
 // TimeSeriesRequest holds the expected
