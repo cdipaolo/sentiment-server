@@ -18,7 +18,8 @@ type TimeSeriesResponse struct {
 // request info for the POST /analyze
 // endpoint
 type AnalyzeJSON struct {
-	Text string `json:"text"`
+	Text     string             `json:"text"`
+	Language sentiment.Language `json:"lang,omitempty"`
 }
 
 // TaskJSON holds a generic request
@@ -44,6 +45,14 @@ type TaskJSON struct {
 type Hook struct {
 	URL     string              `json:"url"`
 	Headers map[string][]string `json:"headers,omitempty"`
+
+	// Lanugage holds the language code expected
+	// to come from the hook. Defaults to 'en'
+	// for English. Look at the available codes
+	// at:
+	//     https://github.com/cdipaolo/sentiment
+	// in its model.go file
+	Language sentiment.Language `json:"lang,omitempty"`
 
 	// Key is the key the URL will look for
 	// in returned JSON. If not provided the
@@ -120,8 +129,8 @@ type TimeSeries struct {
 	Start float64 `json:"start"`
 	End   float64 `json:"end"`
 
-	Text  string  `json:"text"`
-	Score float64 `json:"Score"`
+	Text  string `json:"text"`
+	Score uint8  `json:"Score"`
 }
 
 // TimeSeriesRequest holds the expected

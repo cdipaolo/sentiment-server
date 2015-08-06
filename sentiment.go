@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	model *sentiment.Model
+	model sentiment.Models
 )
 
 func init() {
