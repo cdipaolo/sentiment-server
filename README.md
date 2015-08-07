@@ -99,6 +99,8 @@ Note that all text is converted to lowercase and only letters in a-z are kept (n
 
 Not giving a language will default it to English. Languages must be implemented in [the engine](https://github.com/cdipaolo/sentiment), else they will default to English as well.
 
+The 'probability' param is the probability that the word is in the expected class (only given for words because otherwise it would float-underflow.) This basically tells you the 'confidence' of the prediction for each word. Notice below that 'love' is very high, relatively, because it's seen much more often is positive text examples. This will always range on [1/num_classes, 1] (ie. [0.5, 1] for 2 classes) for all words.
+
 **Expected JSON**
 
 ```json
@@ -112,83 +114,101 @@ Not giving a language will default it to English. Languages must be implemented 
 
 ```json
 {
+  "lang": "en",
   "words": [
     {
-      "word": "im",
-      "score": 0
+      "word": "I'm",
+      "score": 0,
+      "probability": 0.5
     },
     {
       "word": "not",
-      "score": 0
+      "score": 0,
+      "probability": 0.5325118420616781
     },
     {
       "word": "sure",
-      "score": 1
+      "score": 0,
+      "probability": 0.5351043643263756
     },
     {
-      "word": "i",
-      "score": 0
+      "word": "I",
+      "score": 0,
+      "probability": 0.5
     },
     {
       "word": "like",
-      "score": 1
+      "score": 0,
+      "probability": 0.5555894929749542
     },
     {
       "word": "your",
-      "score": 1
+      "score": 0,
+      "probability": 0.5697818762191879
     },
     {
       "word": "tone",
-      "score": 1
+      "score": 1,
+      "probability": 0.5729166666666666
     },
     {
       "word": "right",
-      "score": 1
+      "score": 1,
+      "probability": 0.5149606299212598
     },
     {
-      "word": "now",
-      "score": 1
+      "word": "now.",
+      "score": 1,
+      "probability": 0.514311676510677
     },
     {
-      "word": "i",
-      "score": 0
+      "word": "I",
+      "score": 0,
+      "probability": 0.5
     },
     {
       "word": "do",
-      "score": 1
+      "score": 0,
+      "probability": 0.5
     },
     {
       "word": "love",
-      "score": 1
+      "score": 1,
+      "probability": 0.6674710424710425
     },
     {
       "word": "you",
-      "score": 0
+      "score": 0,
+      "probability": 0.5071368028479404
     },
     {
       "word": "as",
-      "score": 1
+      "score": 0,
+      "probability": 0.5
     },
     {
       "word": "a",
-      "score": 0
+      "score": 0,
+      "probability": 0.5
     },
     {
       "word": "person",
-      "score": 0
+      "score": 0,
+      "probability": 0.5293724966622163
     },
     {
       "word": "though",
-      "score": 1
+      "score": 1,
+      "probability": 0.5446105072463768
     }
   ],
   "sentences": [
     {
-      "sentence": "im not sure i like your tone right now",
+      "sentence": "I'm not sure I like your tone right now",
       "score": 0
     },
     {
-      "sentence": " i do love you as a person though",
+      "sentence": " I do love you as a person though",
       "score": 1
     }
   ],
