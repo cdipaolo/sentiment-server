@@ -235,26 +235,32 @@ Note that you can omit the `hookId` to just use the default hook instead.
 
 ```json
 {
+  "lang": "en",
   "words": [
     {
       "word": "this",
-      "score": 0
+      "score": 0,
+      "probability": 0.5379868877747783
     },
     {
       "word": "is",
-      "score": 1
+      "score": 0,
+      "probability": 0.5
     },
     {
       "word": "an",
-      "score": 1
+      "score": 0,
+      "probability": 0.5
     },
     {
       "word": "awesome",
-      "score": 1
+      "score": 1,
+      "probability": 0.7558886509635974
     },
     {
       "word": "day",
-      "score": 1
+      "score": 1,
+      "probability": 0.5854063018242123
     }
   ],
   "score": 1
