@@ -267,7 +267,7 @@ Note that you can omit the `hookId` to just use the default hook instead.
 }
 ```
 
-###GET /
+### GET /
 
 `GET /` is just a health check endpoint. It returns 'Up' as a status if all is ok (which should be any time it can be called,) as well as the total number of successful analyses (apparently that's the plural of 'analysis') and the total number of successful hooked analyses (which is a subset of the former number.)
 
